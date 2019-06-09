@@ -1,0 +1,36 @@
+version: '2'
+services:
+  web:
+    environment:
+      NODE_ENV: 'dev'
+      NODE_PATH: .
+    command: "npm run start:dev"
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
+      - 9229:9229
+    links:
+      - db
+    depends_on:
+      - db
+  db:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    volumes:
+      - ./db-service/setup.sh:/docker-entrypoint-initdb.d/setup.sh
+      - mongovol:/data/db
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: password
+#      MONGODB_USER: user
+#      MONGODB_DATABASE: GREAT_DB
+#      MONGODB_INITDB_DATABASE: GREAT_DB
+      #      MONGO_INITDB_URL: https://great-new-application-l5es2.mongodb.net
+    ports:
+      - 27017:27017
+volumes:
+  mongovol:
+    external: false
